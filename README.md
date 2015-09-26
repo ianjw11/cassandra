@@ -1,5 +1,7 @@
-Cassandra on Docker
-===================
+Cassandra 2.1 on Docker
+=======================
+
+This is a fork of [github.com/pokle/cassandra](https://github.com/pokle/cassandra) with OpsCenter removed and forcing Cassandra 2.1 (as that is what is required for Titan). If you want to use Cassandra2.2, please check out the other repo.
 
 This is a collection of images and scripts to help you run Cassandra in Docker containers.
 These images are great to provision ephemeral Cassandra topologies for testing and development purpose.
@@ -8,7 +10,6 @@ These images are great to provision ephemeral Cassandra topologies for testing a
     - A single Cassandra node
     - A client container to run tools such as cqlsh, nodetool, etc.
     - A multi-node cluster - running on a single Docker host
-    - Monitored cluster using OpsCenter
 
 If you'd like to help, please get in touch with me, and/or send me pull requests.
 
@@ -21,7 +22,6 @@ Prerequisites
 - Build the cassandra and opscenter images (optional)
 
         ./cassandra/build.sh
-        ./opscenter/build.sh
 
 The last step is optional because Docker will automatically pull the images from [index.docker.io](https://index.docker.io) if you don't already have them. The build process needs an Internet connection, but it is executed only once and then cached on Docker. If you modify the scripts, this is also how you can re-build the images with your changes.
 
@@ -209,24 +209,3 @@ When starting a container, you can pass the SEEDS, LISTEN_ADDRESS environment va
 
 Note that listen_address will also be used for broadcast_address
 
-Cassandra cluster + OpsCenter monitoring
-----------------------------------------
-
-1. Start a Cassandra cluster with 3 nodes:
-
-        ./scripts/run.sh 3
-
-2. Start the OpsCenter container:
-
-        docker run -d --name opscenter poklet/opscenter
-
-    You can also add the `-p 8888:8888` option to bind container's 8888 port to host's 8888 port
-
-3. Connect and configure OpsCenter:
-
-    - Open a browser and connect to [http://replace.me:8888](http://replace.me:8888) - replace the host by the result returned by `./scripts/ipof.sh opscenter`.
-    - Click on the "Use Existing Cluster" button and put at least the IP of one node in the cluster in the host text box. The result of `./scripts/ipof.sh cass1` is a good candidate. Click "Save Cluster" button. OpsCenter start gathering data from the cluster but you do not get full-set metrics yet.
-    - You should see a "0 of 3 agents connected" message on the top of the GUI. Click the "Fix" link aside.
-    - In the popup, click "Enter Credentials" link and fill form with username `opscenter` and password `opscenter`. Click "Done".
-    - Click "Install on all nodes" and then "Accept Fingerprints". OpsCenter installs agent on cluster'snodes remotly.
-    - Once done, you should see the "All agents connected" message.
