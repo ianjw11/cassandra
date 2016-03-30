@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Accept listen_address
-IP=${LISTEN_ADDRESS:-`hostname --ip-address`}
+# Accept listen_address from marathon
+IP=$HOST
 
 # Accept seeds via docker run -e SEEDS=seed1,seed2,...
 SEEDS=${SEEDS:-$IP}
@@ -41,4 +41,5 @@ fi
 
 # Start process
 echo Starting Cassandra on $IP...
-/usr/bin/supervisord
+#/usr/bin/supervisord
+cassandra -f
